@@ -5,7 +5,13 @@
 #define TYPE 1 // Bodenfeuchte
 // define TYPE 2 // Lufttemperatur/Luftfeuchte/Helligkeit
 #define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  60       /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP  10       /* Time ESP32 will go to sleep (in seconds) */
+
+#define ADC1 0
+#define ADC2 1
+#define ADC3 2
+#define ADC4 3
+#define ADC5 4
 
 uint8_t receiverAddress[] = {0xEC, 0xFA, 0xBC, 0x8A, 0xB3, 0xD0};
 uint8_t senderAddress[] = {0,0,0,0,0,0};
@@ -37,7 +43,7 @@ typedef struct struct_inMessage {
   int data8=0;
 } struct_inMessage;
 
-struct_inMessage outMessage;
+struct_outMessage outMessage;
 struct_inMessage inMessage;
 
 void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
@@ -97,6 +103,12 @@ void setup() {
 }
 
 void loop() {
+  delay(100);
+  outMessage.data1 = analogRead(ADC1);
+  outMessage.data2 = analogRead(ADC2);
+  outMessage.data3 = analogRead(ADC3);
+  outMessage.data4 = analogRead(ADC4);
+  outMessage.data5 = analogRead(ADC5);
   
   esp_now_send(0, (uint8_t *) &outMessage, sizeof(outMessage));
   
